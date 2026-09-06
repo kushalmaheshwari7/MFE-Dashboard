@@ -589,7 +589,7 @@ const DRILLS=[
   {id:'calc',icon:'∫',name:'Calculus',color:'var(--sky)',items:[
     'lim x→0 sin(3x)/x','lim n→∞ (1 + 2/n)^n','Derivative of xˣ (log differentiation)',
     '∫ x·eˣ dx (integration by parts)','Taylor series of eˣ and ln(1+x)',
-    'lim x→0 (eˣ − 1 − x)/x² via L'Hôpital','Geometric series: sum + convergence tests',
+    `lim x→0 (eˣ − 1 − x)/x² via L'Hôpital`,'Geometric series: sum + convergence tests',
   ]},
   {id:'linalg',icon:'λ',name:'Linear Algebra',color:'var(--lav)',items:[
     'Eigenvalues & eigenvectors of a 2×2','When is a matrix invertible? (det ≠ 0)',
@@ -913,7 +913,7 @@ $('#drillGrid').addEventListener('change',e=>{
   const{done:dt,tot}=drillTotal();
   $('#drillPct').textContent=Math.round(dt/tot*100)+'% READY';
   if(done===d.items.length)toast(`${d.name} module cleared — Baruch won't know what hit it 🥊`);
-  if(dt===tot)toast('Full drill completion. You're interview-ready. 🔥');
+  if(dt===tot)toast(`Full drill completion. You're interview-ready. 🔥`);
 });
 
 function renderTimeline(){
