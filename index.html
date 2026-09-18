@@ -658,7 +658,7 @@ const PREP={
     test:{req:'GMAT or GRE required; video statement embedded in application.',target:'Class profile ≈ Q168 (you: 170 ✓)',
       note:'Practice the video statement on camera — it is screened, not optional.'},
     intv:{format:'Invited interviews after review (behavioral + light technical)',
-      note:'30–45 min with admissions or alumni. Expect "walk me through a derivative you've studied", goals questions, Sloan-style behaviorals.',
+      note:`30–45 min with admissions or alumni. Expect "walk me through a derivative you've studied", goals questions, Sloan-style behaviorals.`,
       topics:['Why MFin & which track','Derivative pricing intuition','Career goals (AM / quant / fintech)','Behavioral stories (STAR)']},},
   berkeley:{name:'Berkeley MFE',sub:'Haas · 12-month intensive',tShort:'GRE / GMAT',iShort:'Behavioral + technical',
     test:{req:'GRE or GMAT required. TOEFL min 90 (competitive 100+).',target:'Q 167–170 preferred (you: 170 ✓)',
@@ -921,7 +921,7 @@ function renderTimeline(){
   let html=`<div class="strip-line"></div>`;
   for(let m=new Date(T0);m<=T1;m.setMonth(m.getMonth()+1)){
     html+=`<div class="m-tick" style="left:${pctOf(m)}%"></div>
-           <div class="m-label" style="left:${pctOf(m)}%">${MON[m.getMonth()]}${m.getMonth()===0?' ''+String(m.getFullYear()).slice(2):''}</div>`;
+           <div class="m-label" style="left:${pctOf(m)}%">${MON[m.getMonth()]}${m.getMonth()===0?' '+String(m.getFullYear()).slice(2):''}</div>`;
   }
   html+=`<div class="today" style="left:${pctOf(today0())}%"><i></i><span>today</span></div>`;
   html+=state.apps.map(a=>{
