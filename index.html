@@ -170,7 +170,7 @@
   .mono-tile{grid-area:tile;width:46px;height:46px;border-radius:11px;display:grid;place-items:center;font-family:var(--mono);
     font-weight:700;font-size:13px;color:var(--h);background:color-mix(in srgb,var(--h) 14%,transparent);border:1px solid color-mix(in srgb,var(--h) 35%,transparent)}
   .app-name{grid-area:name;min-width:0}
-  .app-name b{font-size:15px;display:block;white-space:normal;overflow-wrap:break-word;line-height:1.25}
+  .app-name b{font-size:15px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .app-name small{font-size:12px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
   .app-when{grid-area:when}
   .app-when b{font-family:var(--mono);font-size:13px;font-weight:500;display:block}
@@ -189,6 +189,10 @@
   .app-card.open .app-body{grid-template-rows:1fr}
   .app-body>div{overflow:hidden}
   .app-inner{padding:4px 16px 18px;border-top:1px dashed var(--line)}
+  .app-inner-head{padding:14px 0 12px;margin-bottom:4px}
+  .app-inner-head b{display:block;font-family:var(--disp);font-weight:600;font-size:19px;line-height:1.3;
+    color:var(--txt);overflow-wrap:break-word}
+  .app-inner-head span{display:block;font-size:12.5px;color:var(--mut);margin-top:3px}
   .checks{display:grid;grid-template-columns:1fr 1fr;gap:6px 20px;padding:14px 2px}
   .ck{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--mut);cursor:pointer;padding:4px 2px;border-radius:7px;transition:color .2s}
   .ck:hover{color:var(--text)}
@@ -220,13 +224,16 @@
   .prep-card summary::-webkit-details-marker{display:none}
   .prep-card .mono-tile{grid-area:tile}
   .prep-card .pname{grid-area:name;min-width:0}
-  .prep-card .pname b{font-size:14.5px;display:block;white-space:normal;overflow-wrap:break-word;line-height:1.25}
+  .prep-card .pname b{font-size:14.5px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .prep-card .pname small{font-size:11.5px;color:var(--dim)}
   .tbadge,.ibadge{font-family:var(--mono);font-size:10px;letter-spacing:.08em;padding:5px 10px;border-radius:6px;white-space:nowrap}
   .tbadge{grid-area:test;color:var(--sky);background:rgba(121,189,235,.10);border:1px solid rgba(121,189,235,.3)}
   .ibadge{grid-area:int;color:var(--lav);background:rgba(193,166,242,.10);border:1px solid rgba(193,166,242,.3)}
   .prep-body{padding:4px 18px 20px;border-top:1px dashed var(--line)}
   .prep-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;padding-top:14px}
+  .prep-name-head{grid-column:1/-1;padding-bottom:4px;border-bottom:1px dashed var(--line);margin-bottom:2px}
+  .prep-name-head b{display:block;font-family:var(--disp);font-weight:600;font-size:18px;overflow-wrap:break-word}
+  .prep-name-head span{display:block;font-size:12px;color:var(--mut);margin-top:2px}
   .prep-col h4{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:8px}
   .prep-col.test h4{color:var(--sky)}
   .prep-col.intv h4{color:var(--lav)}
@@ -368,9 +375,15 @@
     .drill-grid{grid-template-columns:1fr}
   }
   @media(max-width:1300px){
-    .app-main{grid-template-columns:42px minmax(0,1fr) auto;grid-template-areas:"tile name pill" "tile when prog";gap:10px 14px}
+    .app-main{grid-template-columns:46px minmax(0,1fr) 104px;grid-template-areas:"tile name pill" "tile when prog";gap:6px 12px;padding:12px 14px}
+    .app-main .pill{font-size:11px;padding:5px 10px;justify-self:end}
+    .app-when{text-align:left}
+    .app-when b{font-size:12px}
+    .app-prog .bar{width:100%}
     .chev{display:none}
-    .prep-card summary{grid-template-columns:42px minmax(0,1fr) auto;grid-template-areas:"tile name chev" "tile test int"}
+    .app-name b{font-size:14px}
+    .app-name small{font-size:11px}
+    .prep-card summary{grid-template-columns:46px minmax(0,1fr) 90px;grid-template-areas:"tile name chev" "tile test int";gap:6px 12px}
   }
   @media(max-width:760px){
     .head{flex-direction:column;align-items:stretch}
@@ -862,6 +875,10 @@ function cardHTML(a,i){
     </div>
     <div class="app-body"><div>
       <div class="app-inner">
+        <div class="app-inner-head">
+          <b>${esc(a.school)}</b>
+          <span>${esc(a.program)}</span>
+        </div>
         <div class="checks">${CHECK.map(c=>`
           <label class="ck"><input type="checkbox" data-ck="${c.id}" ${a.done.includes(c.id)?'checked':''}>
           <span class="box"><svg viewBox="0 0 14 14"><path d="M2.5 7.5 5.5 10.5 11.5 3.5"/></svg></span>
@@ -897,6 +914,9 @@ function renderPrep(){
       <svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
     </summary>
     <div class="prep-body"><div class="prep-grid">
+      <div class="prep-name-head">
+        <b>${p.name}</b><span>${p.sub}</span>
+      </div>
       <div class="prep-col test">
         <h4>Test requirements</h4>
         <p>${p.test.req}</p>
