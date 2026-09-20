@@ -170,7 +170,7 @@
   .mono-tile{grid-area:tile;width:46px;height:46px;border-radius:11px;display:grid;place-items:center;font-family:var(--mono);
     font-weight:700;font-size:13px;color:var(--h);background:color-mix(in srgb,var(--h) 14%,transparent);border:1px solid color-mix(in srgb,var(--h) 35%,transparent)}
   .app-name{grid-area:name;min-width:0}
-  .app-name b{font-size:15px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .app-name b{font-size:15px;display:block;white-space:normal;overflow-wrap:break-word;line-height:1.25}
   .app-name small{font-size:12px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
   .app-when{grid-area:when}
   .app-when b{font-family:var(--mono);font-size:13px;font-weight:500;display:block}
@@ -220,7 +220,7 @@
   .prep-card summary::-webkit-details-marker{display:none}
   .prep-card .mono-tile{grid-area:tile}
   .prep-card .pname{grid-area:name;min-width:0}
-  .prep-card .pname b{font-size:14.5px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .prep-card .pname b{font-size:14.5px;display:block;white-space:normal;overflow-wrap:break-word;line-height:1.25}
   .prep-card .pname small{font-size:11.5px;color:var(--dim)}
   .tbadge,.ibadge{font-family:var(--mono);font-size:10px;letter-spacing:.08em;padding:5px 10px;border-radius:6px;white-space:nowrap}
   .tbadge{grid-area:test;color:var(--sky);background:rgba(121,189,235,.10);border:1px solid rgba(121,189,235,.3)}
@@ -279,6 +279,23 @@
   .rec .cnt span{font-family:var(--mono);font-size:12px;color:var(--mint)}
   .rec .bar{width:64px;margin-top:5px}
   .rec .bar i{background:linear-gradient(90deg,var(--mint),var(--teal))}
+  .rec-fields{min-width:0;flex:1;display:flex;flex-direction:column;gap:3px}
+  .rec-in{background:transparent;border:1px solid transparent;border-radius:6px;color:var(--txt);
+    font-family:inherit;padding:3px 6px;margin:-3px -6px;width:calc(100% + 12px);min-width:0}
+  .rec-in:hover{border-color:var(--line)}
+  .rec-in:focus{outline:none;border-color:var(--mint);background:var(--panel2)}
+  .rec-name{font-size:13px;font-weight:600}
+  .rec-sub{font-size:11.5px;color:var(--dim)}
+  .rec-num{width:24px;background:transparent;border:1px solid transparent;border-radius:5px;
+    color:var(--mint);font-family:var(--mono);font-size:12px;text-align:center;padding:1px}
+  .rec-num:hover{border-color:var(--line)}
+  .rec-num:focus{outline:none;border-color:var(--mint)}
+  .rec-del{flex:none;width:22px;height:22px;border-radius:50%;border:1px solid var(--line);
+    background:transparent;color:var(--dim);font-size:11px;cursor:pointer;transition:.2s}
+  .rec-del:hover{color:var(--coral);border-color:var(--coral)}
+  .btn-add-rec{margin-top:12px;width:100%;padding:9px;border-radius:9px;border:1px dashed var(--line2);
+    background:transparent;color:var(--mut);font-family:inherit;font-size:12.5px;cursor:pointer;transition:.2s}
+  .btn-add-rec:hover{border-color:var(--mint);color:var(--mint)}
   .sop-core{margin-bottom:14px}
   .sop-core .lab{display:flex;justify-content:space-between;font-size:12.5px;color:var(--mut);margin-bottom:7px}
   .sop-core .lab b{font-family:var(--mono);color:var(--text);font-weight:500}
@@ -291,6 +308,14 @@
   .score-name{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--dim);width:58px;flex:none}
   .score-val{font-family:var(--disp);font-weight:600;font-size:27px;color:#FFD98A;width:58px}
   .score-sub{font-family:var(--mono);font-size:11px;color:var(--mut)}
+  .score-val-in{font-family:var(--disp);font-weight:600;font-size:27px;color:#FFD98A;width:58px;flex:none;
+    background:transparent;border:1px solid transparent;border-radius:6px;padding:2px 4px;margin:-2px -4px}
+  .score-val-in:hover{border-color:var(--line)}
+  .score-val-in:focus{outline:none;border-color:var(--mint);background:var(--panel2)}
+  .score-sub-in{width:28px;background:transparent;border:1px solid transparent;border-radius:5px;
+    color:var(--mut);font-family:var(--mono);font-size:11px;text-align:center;padding:1px}
+  .score-sub-in:hover{border-color:var(--line)}
+  .score-sub-in:focus{outline:none;border-color:var(--mint);color:var(--txt)}
   .sent{font-size:11.5px;color:var(--dim);margin-top:10px}
   .focus-item{display:flex;align-items:flex-start;gap:11px;padding:8px 0;font-size:13px;color:var(--mut);cursor:pointer;transition:color .2s}
   .focus-item:hover{color:var(--text)}
@@ -490,8 +515,9 @@
 
       <aside class="rail">
         <div class="panel widget rv" id="wRecs">
-          <h3>Recommenders <small>3 SECURED</small></h3>
+          <h3>Recommenders <small id="recSecured">3 SECURED</small></h3>
           <div id="recList"></div>
+          <button class="btn-add-rec" id="addRecBtn">+ Add recommender</button>
         </div>
         <div class="panel widget rv" id="wSop">
           <h3>Essays &amp; statements</h3>
@@ -508,8 +534,7 @@
         </div>
         <div class="panel widget rv" id="wScores">
           <h3>Test scores</h3>
-          <div class="score-row"><span class="score-name">GRE</span><span class="score-val">323</span><span class="score-sub">V153 · Q170 · W4.0</span></div>
-          <div class="score-row"><span class="score-name">TOEFL</span><span class="score-val">105</span><span class="score-sub">R28 L27 S25 W25</span></div>
+          <div id="scoreList"></div>
           <div class="sent"><b style="color:var(--mint)">Q170 — perfect quant</b>, clears the bar at every program on this list · official scores sent to 1 school so far</div>
         </div>
         <div class="panel widget rv">
@@ -648,6 +673,15 @@ function seed(){return{
   ],
   drills:(()=>{const o={};DRILLS.forEach(d=>o[d.id]=d.items.map(()=>false));
     o.calc[0]=true;o.cpp[0]=true;return o})(),
+  recs:[
+    {id:'r1',n:'Prof. — Mathematics dept.',r:'Academic',contact:'',c:'#7ED9A0',a:'P1',cnt:5,tot:7},
+    {id:'r2',n:'Research supervisor',r:'Academic · quant/ML project',contact:'',c:'#79BDEB',a:'RS',cnt:4,tot:7},
+    {id:'r3',n:'Manager — quant internship',r:'Industry · requested',contact:'',c:'#F2B84B',a:'QM',cnt:2,tot:7},
+  ],
+  scores:{
+    gre:{total:323,v:153,q:170,w:4.0},
+    toefl:{total:105,r:28,l:27,s:25,w:25},
+  },
 }}
 
 const PREP={
@@ -698,6 +732,8 @@ const PREP={
 function load(){try{const s=localStorage.getItem(KEY);return s?JSON.parse(s):seed()}catch(e){return seed()}}
 let state=load();
 if(!state.drills)state.drills=seed().drills;
+if(!state.recs)state.recs=seed().recs;
+if(!state.scores)state.scores=seed().scores;
 const openSet=new Set();
 let filter={q:'',status:'all',sort:'deadline'};
 
@@ -943,18 +979,73 @@ function renderTimeline(){
   });
 }
 
-const RECS=[
-  {n:'Prof. — Mathematics dept.',r:'Academic · strongest letter',a:'P1',c:'#7ED9A0',cnt:5,tot:7},
-  {n:'Research supervisor',r:'Academic · quant/ML project',a:'RS',c:'#79BDEB',cnt:4,tot:7},
-  {n:'Manager — quant internship',r:'Industry · requested',a:'QM',c:'#F2B84B',cnt:2,tot:7},
-];
+const RECHUES=['#7ED9A0','#79BDEB','#F2B84B','#F28B82','#C1A6F2','#F2A6D0','#8BE0D6'];
+function recInitials(n){return n.split(/\s+/).filter(w=>!/^(of|the|—|-)$/i.test(w)).map(w=>w[0]).filter(Boolean).slice(0,2).join('').toUpperCase()||'?'}
 function renderRecs(){
-  $('#recList').innerHTML=RECS.map(r=>`
-    <div class="rec"><div class="avatar" style="color:${r.c};border-color:${r.c}55">${r.a}</div>
-    <div><b>${r.n}</b><small>${r.r}</small></div>
-    <div class="cnt"><span>${r.cnt}/${r.tot}</span><div class="bar"><i style="width:${r.cnt/r.tot*100}%"></i></div></div></div>`).join('');
+  const secured=state.recs.filter(r=>r.cnt>=r.tot&&r.tot>0).length;
+  $('#recSecured').textContent=secured+' SECURED';
+  $('#recList').innerHTML=state.recs.map((r,i)=>`
+    <div class="rec rec-edit" data-i="${i}">
+      <div class="avatar" style="color:${r.c};border-color:${r.c}55">${esc(recInitials(r.n))}</div>
+      <div class="rec-fields">
+        <input class="rec-in rec-name" data-rf="n" data-i="${i}" value="${esc(r.n)}" placeholder="Name">
+        <input class="rec-in rec-sub" data-rf="contact" data-i="${i}" value="${esc(r.contact||'')}" placeholder="Email or phone">
+      </div>
+      <div class="cnt">
+        <span><input class="rec-num" data-rf="cnt" data-i="${i}" type="number" min="0" value="${r.cnt}">/<input class="rec-num" data-rf="tot" data-i="${i}" type="number" min="0" value="${r.tot}"></span>
+        <div class="bar"><i style="width:${r.tot?Math.min(100,r.cnt/r.tot*100):0}%"></i></div>
+      </div>
+      <button class="rec-del" data-del-rec="${i}" aria-label="Remove recommender">✕</button>
+    </div>`).join('');
+  $$('.rec-in,.rec-num').forEach(el=>{
+    const ev=el.type==='number'?'input':'input';
+    el[ev==='input'?'oninput':'onchange']=()=>{
+      const i=+el.dataset.i,f=el.dataset.rf;
+      state.recs[i][f]=el.type==='number'?Math.max(0,+el.value||0):el.value;
+      save();
+      if(f==='n'){const av=el.closest('.rec').querySelector('.avatar');av.textContent=recInitials(el.value)}
+      if(f==='cnt'||f==='tot'){
+        const r=state.recs[i];
+        el.closest('.rec').querySelector('.bar i').style.width=(r.tot?Math.min(100,r.cnt/r.tot*100):0)+'%';
+        const secured=state.recs.filter(x=>x.cnt>=x.tot&&x.tot>0).length;
+        $('#recSecured').textContent=secured+' SECURED';
+      }
+    };
+  });
+  $$('[data-del-rec]').forEach(b=>b.onclick=()=>{
+    state.recs.splice(+b.dataset.delRec,1);save();renderRecs();
+  });
 }
+$('#addRecBtn').onclick=()=>{
+  state.recs.push({id:'r'+Date.now(),n:'',r:'',contact:'',c:RECHUES[state.recs.length%RECHUES.length],a:'',cnt:0,tot:7});
+  save();renderRecs();
+  const inputs=$$('.rec-name');inputs[inputs.length-1]?.focus();
+};
 
+function renderScores(){
+  const g=state.scores.gre,t=state.scores.toefl;
+  $('#scoreList').innerHTML=`
+    <div class="score-row">
+      <span class="score-name">GRE</span>
+      <input class="score-val-in" data-sc="gre.total" type="number" value="${g.total}">
+      <span class="score-sub">V<input class="score-sub-in" data-sc="gre.v" type="number" value="${g.v}"> ·
+        Q<input class="score-sub-in" data-sc="gre.q" type="number" value="${g.q}"> ·
+        W<input class="score-sub-in" data-sc="gre.w" type="number" step="0.5" value="${g.w}"></span>
+    </div>
+    <div class="score-row">
+      <span class="score-name">TOEFL</span>
+      <input class="score-val-in" data-sc="toefl.total" type="number" value="${t.total}">
+      <span class="score-sub">R<input class="score-sub-in" data-sc="toefl.r" type="number" value="${t.r}">
+        L<input class="score-sub-in" data-sc="toefl.l" type="number" value="${t.l}">
+        S<input class="score-sub-in" data-sc="toefl.s" type="number" value="${t.s}">
+        W<input class="score-sub-in" data-sc="toefl.w" type="number" value="${t.w}"></span>
+    </div>`;
+  $$('#scoreList input').forEach(inp=>inp.oninput=()=>{
+    const[sec,field]=inp.dataset.sc.split('.');
+    state.scores[sec][field]=+inp.value||0;
+    save();
+  });
+}
 function renderFocus(){
   $('#focusList').innerHTML=state.focus.map((f,i)=>`
     <label class="focus-item"><input type="checkbox" data-fi="${i}" ${f.done?'checked':''}>
@@ -1095,7 +1186,7 @@ $$('.rv').forEach(el=>io.observe(el));
 
 $('#footDate').textContent='TODAY · '+MON[new Date().getMonth()].toUpperCase()+' '+new Date().getDate()+', '+new Date().getFullYear();
 
-renderAll(true);renderPrep();renderDrills();renderRecs();renderFocus();renderActs();tick();
+renderAll(true);renderPrep();renderDrills();renderRecs();renderScores();renderFocus();renderActs();tick();
 setTimeout(()=>{const ready=Math.round(state.apps.reduce((s,a)=>s+pct(a),0)/state.apps.length/100);
   $('#ringFg').style.strokeDashoffset=163.4*(1-ready)},300);
 
@@ -1110,7 +1201,7 @@ setTimeout(()=>{const ready=Math.round(state.apps.reduce((s,a)=>s+pct(a),0)/stat
       state=row.state;
       try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}
       localStorage.setItem(REVKEY,remoteRev);
-      renderAll(false);renderDrills();renderFocus();
+      renderAll(false);renderDrills();renderRecs();renderScores();renderFocus();
     }else{
       await pushCloud();
     }
