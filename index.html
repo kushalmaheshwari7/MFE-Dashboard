@@ -398,6 +398,10 @@
   @media(prefers-reduced-motion:reduce){
     *,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important}
   }
+
+.applink{font-size:.72rem;letter-spacing:.04em;color:var(--amber);text-decoration:none;white-space:nowrap;
+  border:1px solid color-mix(in srgb,var(--amber) 45%,transparent);border-radius:999px;padding:5px 11px}
+.applink:hover,.applink:focus-visible{background:color-mix(in srgb,var(--amber) 14%,transparent)}
 </style>
 </head>
 <body>
@@ -660,23 +664,49 @@ const QOTD=[
   {q:'How many trailing zeros in 100! ?',a:'Count factors of 5: <b>⌊100/5⌋ + ⌊100/25⌋ = 20 + 4 = 24</b>.'},
 ];
 
+// Shortlist: tier Reach = ambitious, Target = moderate, Safety = safe. Costs are total-course estimates in lakh Rs.
+const SHORTLIST=[
+  {id:'baruch',school:'Baruch College (CUNY)',program:'MFE · Round 2 (target)',tier:'Target',status:'drafting',deadline:'2026-12-01',hue:3,done:['tr','sop','cv','r1','fee'],
+   url:'https://mfe.baruch.cuny.edu/application-process/',
+   notes:'Est. total cost Rs 50-55 L. Rounds: Nov 1, Dec 1, Jan 15, Mar 15. The technical interview decides admission. Live in the Drill Hall until then.'},
+  {id:'cmu',school:'Carnegie Mellon University',program:'MS Computational Finance (MSCF)',tier:'Reach',status:'researching',deadline:'2026-12-01',hue:0,done:['tr'],
+   url:'https://www.cmu.edu/mscf/admissions',
+   notes:'Est. total cost Rs 70-75 L. Round 1 Dec 1 (decision Feb 26), Round 2 Mar 1. Interview can be invited any time before decisions.'},
+  {id:'princeton',school:'Princeton University',program:'M.Fin · Bendheim Center for Finance',tier:'Reach',status:'drafting',deadline:'2026-12-15',hue:5,done:['tr','cv','sop'],
+   url:'https://bcf.princeton.edu/academic-programs/master-in-finance/apply-for-the-master-in-finance-program',
+   notes:'Est. total cost Rs 60-65 L. Deadline Dec 15, 2026, decisions by Mar 15. Written + video assessment before any live round.'},
+  {id:'gatech',school:'Georgia Tech',program:'MS Quantitative & Computational Finance',tier:'Target',status:'researching',deadline:'2026-12-05',hue:6,done:[],
+   url:'https://qcf.gatech.edu/prospective-students/application-requirements',
+   notes:'Est. total cost Rs 55-60 L. International rounds: Oct 15 (early), Dec 5 (standard), Mar 15 (final).'},
+  {id:'nyu',school:'NYU Tandon',program:'MS Financial Engineering',tier:'Safety',status:'researching',deadline:'2026-12-01',hue:4,done:[],
+   url:'https://apply.engineering.nyu.edu/apply/',
+   notes:'Est. total cost Rs 60-65 L. Priority deadline Dec 1, then Feb 15. Dates are not year-specific on the page; confirm with admissions.'},
+  {id:'berkeley',school:'UC Berkeley · Haas',program:'MFE · Spring 2028 entry',tier:'Reach',status:'drafting',deadline:'2026-12-01',hue:1,done:['tr','cv'],
+   url:'https://applynow.haas.berkeley.edu/apply/',
+   notes:'Est. total cost Rs 60-65 L. Spring start only, no fall admission, so this is the Spring 2028 class. Rounds: Dec 1 2026, Jan 27, Apr 1, Jul 1 2027. Decisions about 9 weeks after each round.'},
+  {id:'mit',school:'MIT Sloan',program:'Master of Finance',tier:'Reach',status:'researching',deadline:'2027-01-05',hue:4,done:['tr'],
+   url:'https://mitsloan.mit.edu/mfin/admissions/how-to-apply',
+   notes:'Est. total cost Rs 60-65 L. Deadline Jan 5, 2027 (3 pm ET), decisions in March. Video statement is part of the app. Decide 12 vs 18-month track first.'},
+  {id:'rochester',school:'University of Rochester',program:'Simon · MS Finance',tier:'Safety',status:'researching',deadline:'2027-01-05',hue:1,done:[],
+   url:'https://apply.simon.rochester.edu/apply/',
+   notes:'Est. total cost Rs 55-60 L. Rolling rounds: Oct 15, Jan 5, Feb 15, Mar 31. Year not stated on the page; confirm with admissions.'},
+  {id:'yale',school:'Yale School of Management',program:'Master of Asset Management (MAM)',tier:'Reach',status:'researching',deadline:'2027-01-07',hue:7,done:[],
+   url:'https://admissions.som.yale.edu/apply/?pk=2027AM',
+   notes:'Est. total cost Rs 65-70 L. One deadline: Jan 7, 2027. Nine-month program. GMAT or GRE, two letters (one academic, one professional), one 500-word essay, then video and written answers in the Kira portal. Interview is behavioral, by invitation.'},
+  {id:'eth',school:'ETH Zürich',program:'UZH-ETH MSc Quantitative Finance',tier:'Target',status:'researching',deadline:'2027-01-15',hue:7,done:['tr'],
+   url:'https://www.msfinance.uzh.ch/en/admission/applicationinformation.html',
+   notes:'Est. total cost Rs 55-60 L. Two phases: the program site from Nov 15 to Jan 15, then the UZH portal by Apr 30. The page gives no year; confirm. Check this is the ETH program you mean.'},
+  {id:'chicago',school:'University of Chicago',program:'MS Financial Mathematics',tier:'Target',status:'researching',deadline:'2027-01-15',hue:2,done:[],
+   url:'https://finmath.uchicago.edu/admissions/',
+   notes:'Est. total cost Rs 60-65 L. Round 1 is in January 2027, exact day not yet announced (Jan 15 is a placeholder). Round 2 in March. Non-US applicants should use Round 1.'},
+  {id:'columbia',school:'Columbia University',program:'MS Financial Engineering · IEOR',tier:'Reach',status:'researching',deadline:'2027-01-15',hue:6,done:[],
+   url:'https://www.gradengineering.columbia.edu/graduate-admissions/apply',
+   notes:'Est. total cost Rs 75-80 L. One Fall deadline, Jan 15 (the page gives no year), decisions mid to late April. No priority round and no rolling admissions.'},
+];
+
 function seed(){return{
-  apps:[
-    {id:'eth',school:'ETH Zürich',program:'MSc Finance',tier:'Reach',status:'researching',deadline:'2026-12-15',hue:5,done:['tr'],
-     notes:'No interview — admission hinges on course-match (math/stats/finance credits). Map my transcript early.'},
-    {id:'princeton',school:'Princeton University',program:'M.Fin · Bendheim Center for Finance',tier:'Reach',status:'drafting',deadline:'2027-01-04',hue:0,done:['tr','cv','sop'],
-     notes:'Written + video assessment before any live round. Emphasize quant coursework & career goals.'},
-    {id:'mit',school:'MIT Sloan',program:'Master of Finance',tier:'Reach',status:'researching',deadline:'2027-01-06',hue:4,done:['tr'],
-     notes:'Video statement is part of the app. Decide 12 vs 18-month track before essays.'},
-    {id:'berkeley',school:'UC Berkeley · Haas',program:'Master of Financial Engineering',tier:'Target',status:'drafting',deadline:'2027-01-08',hue:1,done:['tr','cv'],
-     notes:'Round 1 deadline. 12-month format — interview probes math fundamentals + coding projects.'},
-    {id:'oxford',school:'University of Oxford',program:'MSc Mathematical Finance',tier:'Reach',status:'researching',deadline:'2027-01-12',hue:2,done:['tr','cv'],
-     notes:'GRE required (GMAT NOT accepted). Q170 already in hand — send official scores ASAP.'},
-    {id:'baruch',school:'Baruch College (CUNY)',program:'MFE · priority round',tier:'Reach',status:'drafting',deadline:'2027-01-31',hue:3,done:['tr','sop','cv','r1','fee'],
-     notes:'The technical interview is THE differentiator. Live in the Drill Hall until January.'},
-    {id:'columbia',school:'Columbia University',program:'MS Financial Engineering · IEOR',tier:'Target',status:'researching',deadline:'2027-02-15',hue:6,done:[],
-     notes:'Decision is mostly application-driven. Highlight stochastic processes / PDE coursework + C++.'},
-  ],
+  mig:5,
+  apps:SHORTLIST.map(a=>({...a})),
   focus:[
     {t:'Send official GRE + TOEFL scores to Princeton & Baruch',done:false},
     {t:'Finish Baruch personal-statement draft',done:false},
@@ -712,13 +742,13 @@ const PREP={
       topics:['Why MFin & which track','Derivative pricing intuition','Career goals (AM / quant / fintech)','Behavioral stories (STAR)']},},
   berkeley:{name:'Berkeley MFE',sub:'Haas · 12-month intensive',tShort:'GRE / GMAT',iShort:'Behavioral + technical',
     test:{req:'GRE or GMAT required. TOEFL min 90 (competitive 100+).',target:'Q 167–170 preferred (you: 170 ✓)',
-      note:'Round-based admissions: earlier rounds fill seats — Round 1 is the play.'},
+      note:'Spring start only, no fall admission: this is the Spring 2028 class. Rounds: Dec 1 2026, Jan 27, Apr 1, Jul 1 2027. Decisions come about 9 weeks after each round.'},
     intv:{format:'Invitation-only, ~45 min, program staff/faculty',
       note:'Tests fundamentals live: calculus, probability, linear algebra, plus questions about your Python/C++ projects. Demonstrated interest matters.',
       topics:['Calculus & linear algebra basics','Probability & distributions','Python / C++ project talk','Why Haas MFE & the 12-mo format']},},
   columbia:{name:'Columbia MSFE',sub:'IEOR department · NYC',tShort:'GRE (GMAT case-by-case)',iShort:'Mostly app-driven',
     test:{req:'GRE required (GMAT considered case-by-case). TOEFL 100+ expected for international applicants.',target:'Q 167+ recommended (you: 170 ✓)',
-      note:'Priority deadline matters — IEOR reviews early and fills fast.'},
+      note:'One Fall deadline, Jan 15 (no priority or regular split), decisions mid to late April. IEOR does not admit on a rolling basis.'},
     intv:{format:'No universal interview; video essay appears in some cycles',
       note:'Admission leans on the application itself: advanced math coursework, internships, programming. Make the transcript story explicit.',
       topics:['Advanced math coursework','Stochastic processes / PDEs','C++ for finance','NYC internship narrative']},},
@@ -734,12 +764,48 @@ const PREP={
     intv:{format:'Academic interview for shortlisted candidates',
       note:'Maths-heavy: probability theory, stochastic processes, real analysis; why Oxford Mathematical Finance; research vs industry intentions.',
       topics:['Measure-theoretic probability','Martingales & stochastic calculus','Real analysis fundamentals','PhD / quant-research ambitions']},},
-  eth:{name:'ETH Zürich MSc Finance',sub:'2-year · very low tuition',tShort:'GRE req.',iShort:'None (course-match)',
-    test:{req:'GRE required (quant-heavy). Check current English-proficiency documentation rules.',target:'Q 167+ (you: 170 ✓)',
-      note:'Strong GPA + course-match dominate. Tuition is negligible — funding-friendly option.'},
-    intv:{format:'Typically no interview for MSc admission',
-      note:'ETH screens for matching credits in mathematics, statistics and finance, plus grades. Prepare a clear transcript-to-requirements mapping.',
-      topics:['Course-mapping your transcript','GRE quant grind','Elective fit (finance track)','Visa / relocation timeline']},},
+  eth:{name:'UZH-ETH MSc Quantitative Finance',sub:'Zürich · joint UZH and ETH program',tShort:'Not on page',iShort:'Not on page',
+    test:{req:'The application page does not mention GRE or GMAT. Check the eligibility page. An English-language certificate is needed in phase 2.',target:'Confirm on the eligibility page',
+      note:'Two phases: the program site from Nov 15 to Jan 15, then the UZH portal in March and April, hard deadline Apr 30. The page gives no year.'},
+    intv:{format:'No interview described on the application page',
+      note:'Admission screens for matching credits in mathematics, statistics and finance, plus grades. Prepare a clear transcript-to-requirements mapping.',
+      topics:['Course-mapping your transcript','Quant coursework evidence','Elective fit','Visa / relocation timeline']},},
+  yale:{name:'Yale SOM Master of Asset Management',sub:'Yale SOM · 9-month · apply by Jan 7',tShort:'GMAT / GRE',iShort:'Behavioral (staff)',
+    test:{req:'GMAT or GRE required, no preference and no minimum. TOEFL, DET or IELTS needed unless your degree was taught fully in English; scores under two years old.',target:'No minimum (you: Q170 ✓). Offset the 153 Verbal with a clean essay.',
+      note:'Two letters (one academic, one professional), one 500-word essay on career interests, then two recorded answers (60 and 90 seconds) and an 8-minute written response in the Kira portal after you submit. Light weight, not a finance test.'},
+    intv:{format:'By invitation, rolling, about 30 minutes, run by SOM staff',
+      note:'Behavioral, with no technical finance questions. Expect motivation and career-interest questions. Tie your index-building work to buy-side asset management.',
+      topics:['Why asset management, why now','Short and long-term career interests','Resume deep-dive (index work at MS)','Why Yale SOM','Behavioral stories (STAR)']},},
+  cmu:{name:'CMU MSCF',sub:'Computational Finance · Pittsburgh and New York',tShort:'GRE sent',iShort:'Any time pre-decision',
+    test:{req:'You have already sent GRE scores. English score minimums not re-checked this round; confirm on the admissions page.',target:'Round 1 Dec 1 (decision Feb 26), Round 2 Mar 1',
+      note:'Deposit is due Mar 25 for Round 1 admits. Plan funding before decisions land.'},
+    intv:{format:'Invitation can arrive at any point between submission and the decision date',
+      note:'Older applicant posts on QuantNet describe an informal conversation rather than a drill. Expect your resume and projects to carry it.',
+      topics:['Resume deep-dive','Why MSCF','Probability and stochastic calculus basics','Programming experience']},},
+  gatech:{name:'Georgia Tech MS QCF',sub:'Quantitative & Computational Finance',tShort:'GRE / GMAT',iShort:'Behavioral',
+    test:{req:'Official GRE or GMAT required (GRE waived only for US degree holders with a 3.7+ GPA). Official TOEFL to institute code 5248.',target:'Higher Quant score counts if you send several',
+      note:'Three recommenders, academic or professional in any mix. International rounds: Oct 15, Dec 5, Mar 15. Prerequisites: calculus, linear algebra, differential equations, probability and statistics.'},
+    intv:{format:'Behavioral interview with the Associate Director, by invitation to competitive candidates',
+      note:'Be ready to discuss your resume, projects and academic history.',
+      topics:['Resume walk-through','Copula pairs-trading project','Math prerequisites','Programming (Python, C++)']},},
+  nyu:{name:'NYU Tandon MSFE',sub:'Financial Engineering · 33 credits',tShort:'GRE optional',iShort:'None listed',
+    test:{req:'GRE is optional. English test where applicable. Prerequisites: linear algebra, probability, advanced multivariable calculus, applied statistics, programming.',target:'Fall 2025 entrants averaged 168.6 on Quant (you: 170 ✓)',
+      note:'Needs transcripts, resume, statement of purpose, a 1-minute video and two recommendations. Priority deadline Dec 1, then Feb 15; the page gives no year.'},
+    intv:{format:'No interview mentioned on the program page',
+      note:'The 1-minute video is the closest thing to a screen. Practice it on camera.',
+      topics:['1-minute video','Statement of purpose','Quant coursework evidence','Programming']},},
+  chicago:{name:'UChicago MS Financial Mathematics',sub:'Physical Sciences Division',tShort:'Not on page',iShort:'Not on page',
+    test:{req:'The admissions page I could read does not list test or English requirements. Confirm on the program site.',target:'Apply in Round 1 (non-US applicants are advised to)',
+      note:'Round 1 is January 2027 and Round 2 is March, days to be announced. Fee is $90. Offers go out on a rolling basis through May.'},
+    intv:{format:'Not stated',
+      note:'No interview details are published on the page. Ask the admissions office before you plan prep time.',
+      topics:['Quant coursework evidence','Programming','Career goals']},},
+  rochester:{name:'Rochester Simon MS Finance',sub:'Full-time MS · five rolling rounds',tShort:'Not re-checked',iShort:'Not re-checked',
+    test:{req:'Test and English requirements not re-checked this round; confirm on the program page.',target:'Apply by the Jan 5 round or earlier',
+      note:'Rounds: Oct 15, Jan 5, Feb 15, Mar 31, May 1. An earlier submission within a window can mean an earlier decision. The page gives no year.'},
+    intv:{format:'Not re-checked',
+      note:'Confirm interview format with admissions@simon.rochester.edu.',
+      topics:['Career goals','Quant coursework evidence','Resume deep-dive']},},
 };
 
 function load(){try{const s=localStorage.getItem(KEY);return s?JSON.parse(s):seed()}catch(e){return seed()}}
@@ -747,6 +813,27 @@ let state=load();
 if(!state.drills)state.drills=seed().drills;
 if(!state.recs)state.recs=seed().recs;
 if(!state.scores)state.scores=seed().scores;
+
+// v5 migration: add shortlist schools that are missing, correct tier/deadline/program/link on known ones.
+// Keeps checklist progress and status. A note you wrote is kept; the school summary goes in front of it.
+// The flag lives inside state, so it syncs and re-runs after a cloud pull.
+function migrate4(){
+  if(!state||!Array.isArray(state.apps)||state.mig>=5)return false;
+  const have=new Map(state.apps.map(a=>[a.id,a]));
+  SHORTLIST.forEach(n=>{
+    const e=have.get(n.id);
+    if(!e)state.apps.push({...n});
+    else{
+      e.tier=n.tier;e.deadline=n.deadline;e.program=n.program;e.url=n.url;
+      const old=(e.notes||'').trim();
+      if(!old||old.startsWith('Est. total cost'))e.notes=n.notes;
+      else e.notes=n.notes+'\n\nEarlier note: '+old;
+    }
+  });
+  state.mig=5;
+  return true;
+}
+if(migrate4()){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
 const openSet=new Set();
 let filter={q:'',status:'all',sort:'deadline'};
 
@@ -888,6 +975,7 @@ function cardHTML(a,i){
         <div class="app-foot">
           <span class="tier ${a.tier}">${a.tier}</span>
           <span class="dd">DEADLINE ${fmtD(a.deadline).toUpperCase()} ${parseD(a.deadline).getFullYear()}</span>
+          ${a.url?`<a class="applink" href="${esc(a.url)}" target="_blank" rel="noopener">Application page ↗</a>`:''}
           <button class="del" data-del>Remove</button>
         </div>
       </div>
@@ -903,7 +991,8 @@ function renderApps(){
 }
 
 function renderPrep(){
-  const order=['princeton','mit','berkeley','columbia','baruch','oxford','eth'];
+  const order=['princeton','mit','yale','cmu','berkeley','columbia','baruch','chicago','gatech','nyu','rochester','eth','oxford'].filter(k=>PREP[k]);
+  const link=k=>{const a=state.apps.find(x=>x.id===k)||SHORTLIST.find(x=>x.id===k);return a&&a.url?`<a class="applink" href="${esc(a.url)}" target="_blank" rel="noopener">Application page ↗</a>`:''};
   $('#prepList').innerHTML=order.map((k,i)=>{const p=PREP[k];return `
   <details class="prep-card" style="--i:${i}">
     <summary>
@@ -916,6 +1005,7 @@ function renderPrep(){
     <div class="prep-body"><div class="prep-grid">
       <div class="prep-name-head">
         <b>${p.name}</b><span>${p.sub}</span>
+        ${link(k)}
       </div>
       <div class="prep-col test">
         <h4>Test requirements</h4>
@@ -1219,7 +1309,9 @@ setTimeout(()=>{const ready=Math.round(state.apps.reduce((s,a)=>s+pct(a),0)/stat
     const remoteRev=Date.parse(row.updated_at);
     if(remoteRev>lastRev){
       state=row.state;
+      const migrated=migrate4();
       try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}
+      if(migrated)scheduleCloud();
       localStorage.setItem(REVKEY,remoteRev);
       renderAll(false);renderDrills();renderRecs();renderScores();renderFocus();
     }else{
